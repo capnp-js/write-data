@@ -1,155 +1,204 @@
 /* @flow */
 
-import test from "ava";
-
+import * as assert from "assert";
 import * as decode from "@capnp-js/read-data";
+import { describe, it } from "mocha";
 
 import * as encode from "../../src/index";
 
-test("`bit`", t => {
+describe("bit", function () {
   const b = new Uint8Array(1);
   b[0] = 0;
 
-  encode.bit(true, b, 0, 0);
-  encode.bit(true, b, 0, 1);
-  encode.bit(true, b, 0, 7);
+  it("sets one bit at a time within a byte", function () {
+    encode.bit(true, b, 0, 0);
+    assert.equal(b[0], 0x01);
 
-  t.is(b[0], 0x83);
+    encode.bit(true, b, 0, 1);
+    assert.equal(b[0], 0x03);
+
+    encode.bit(true, b, 0, 7);
+    assert.equal(b[0], 0x83);
+  });
 });
 
-test("`int8`", t => {
-  t.plan(4);
-
+describe("int8", function () {
   const b = new Uint8Array(4);
 
-  encode.int8(-1, b, 0);
-  t.is(decode.int8(b, 0), -1);
+  it("encodes -1 correctly", function () {
+    encode.int8(-1, b, 0);
+    assert.equal(decode.int8(b, 0), -1);
+  });
 
-  encode.int8(-92, b, 1);
-  t.is(decode.int8(b, 1), -92);
+  it("encodes -92 correctly", function () {
+    encode.int8(-92, b, 1);
+    assert.equal(decode.int8(b, 1), -92);
+  });
 
-  encode.int8(95, b, 2);
-  t.is(decode.int8(b, 2), 95);
+  it("encodes 95 correctly", function () {
+    encode.int8(95, b, 2);
+    assert.equal(decode.int8(b, 2), 95);
+  });
 
-  encode.int8(-128, b, 3);
-  t.is(decode.int8(b, 3), -128);
+  it("encodes -128 correctly", function () {
+    encode.int8(-128, b, 3);
+    assert.equal(decode.int8(b, 3), -128);
+  });
 });
 
-test("`int16`", t => {
-  t.plan(4);
-
+describe("int16", function () {
   const b = new Uint8Array(8);
 
-  encode.int16(-30913, b, 0);
-  t.is(decode.int16(b, 0), -30913);
+  it("encodes -30913 correctly", function () {
+    encode.int16(-30913, b, 0);
+    assert.equal(decode.int16(b, 0), -30913);
+  });
 
-  encode.int16(-3288, b, 2);
-  t.is(decode.int16(b, 2), -3288);
+  it("encodes -3288 correctly", function () {
+    encode.int16(-3288, b, 2);
+    assert.equal(decode.int16(b, 2), -3288);
+  });
 
-  encode.int16(32311, b, 4);
-  t.is(decode.int16(b, 4), 32311);
+  it("encodes 32311 correctly", function () {
+    encode.int16(32311, b, 4);
+    assert.equal(decode.int16(b, 4), 32311);
+  });
 
-  encode.int16(7816, b, 6);
-  t.is(decode.int16(b, 6), 7816);
+  it("encodes 7816 correctly", function () {
+    encode.int16(7816, b, 6);
+    assert.equal(decode.int16(b, 6), 7816);
+  });
 });
 
-test("`int32`", t => {
-  t.plan(4);
-
+describe("int32", function () {
   const b = new Uint8Array(16);
 
-  encode.int32(-752923624, b, 0);
-  t.is(decode.int32(b, 0), -752923624);
+  it("encodes -752923624 correctly", function () {
+    encode.int32(-752923624, b, 0);
+    assert.equal(decode.int32(b, 0), -752923624);
+  });
 
-  encode.int32(-1310517252, b, 4);
-  t.is(decode.int32(b, 4), -1310517252);
+  it("encodes -1310517252 correctly", function () {
+    encode.int32(-1310517252, b, 4);
+    assert.equal(decode.int32(b, 4), -1310517252);
+  });
 
-  encode.int32(1377815832, b, 8);
-  t.is(decode.int32(b, 8), 1377815832);
+  it("encodes 1377815832 correctly", function () {
+    encode.int32(1377815832, b, 8);
+    assert.equal(decode.int32(b, 8), 1377815832);
+  });
 
-  encode.int32(467873626, b, 12);
-  t.is(decode.int32(b, 12), 467873626);
+  it("encodes 467873626 correctly", function () {
+    encode.int32(467873626, b, 12);
+    assert.equal(decode.int32(b, 12), 467873626);
+  });
 });
 
-test("`uint8`", t => {
-  t.plan(4);
-
+describe("uint8", function () {
   const b = new Uint8Array(4);
 
-  encode.uint8(255, b, 0);
-  t.is(decode.uint8(b, 0), 255);
+  it("encodes 255 correctly", function () {
+    encode.uint8(255, b, 0);
+    assert.equal(decode.uint8(b, 0), 255);
+  });
 
-  encode.uint8(164, b, 1);
-  t.is(decode.uint8(b, 1), 164);
+  it("encodes 164 correctly", function () {
+    encode.uint8(164, b, 1);
+    assert.equal(decode.uint8(b, 1), 164);
+  });
 
-  encode.uint8(95, b, 2);
-  t.is(decode.uint8(b, 2), 95);
+  it("encodes 95 correctly", function () {
+    encode.uint8(95, b, 2);
+    assert.equal(decode.uint8(b, 2), 95);
+  });
 
-  encode.uint8(128, b, 3);
-  t.is(decode.uint8(b, 3), 128);
+  it("encodes 128 correctly", function () {
+    encode.uint8(128, b, 3);
+    assert.equal(decode.uint8(b, 3), 128);
+  });
 });
 
-test("`uint16`", t => {
-  t.plan(4);
-
+describe("uint16", function () {
   const b = new Uint8Array(8);
 
-  encode.uint16(34623, b, 0);
-  t.is(decode.uint16(b, 0), 34623);
+  it("encodes 34623 correctly", function () {
+    encode.uint16(34623, b, 0);
+    assert.equal(decode.uint16(b, 0), 34623);
+  });
 
-  encode.uint16(62248, b, 2);
-  t.is(decode.uint16(b, 2), 62248);
+  it("encodes 62248 correctly", function () {
+    encode.uint16(62248, b, 2);
+    assert.equal(decode.uint16(b, 2), 62248);
+  });
 
-  encode.uint16(32311, b, 4);
-  t.is(decode.uint16(b, 4), 32311);
+  it("encodes 32311 correctly", function () {
+    encode.uint16(32311, b, 4);
+    assert.equal(decode.uint16(b, 4), 32311);
+  });
 
-  encode.uint16(7816, b, 6);
-  t.is(decode.uint16(b, 6), 7816);
+  it("encodes 7816 correctly", function () {
+    encode.uint16(7816, b, 6);
+    assert.equal(decode.uint16(b, 6), 7816);
+  });
 });
 
-test("`float32`", t => {
-  t.plan(5);
-
+describe("float32", function () {
   const epsilon = Math.pow(2, -24);
 
-  const v1 = 25622.3;
-  t.true(Math.abs(v1 - decode.float32(encode.float32(v1))) < Math.abs(v1*epsilon));
+  it("encodes 25622.3 within float 32 epsilon", function () {
+    const v = 25622.3;
+    assert.ok(Math.abs(v - decode.float32(encode.float32(v))) < Math.abs(v*epsilon));
+  });
 
-  const v2 = -0.00000128198;
-  t.true(Math.abs(v2 - decode.float32(encode.float32(v2))) < Math.abs(v2*epsilon));
+  it("encodes -0.00000128198 within float 32 epsilon", function () {
+    const v = -0.00000128198;
+    assert.ok(Math.abs(v - decode.float32(encode.float32(v))) < Math.abs(v*epsilon));
+  });
 
-  const v3 = NaN;
-  t.is(decode.float32(encode.float32(v3)), v3);
+  it("encodes NaN correctly", function () {
+    assert.ok(Number.isNaN(decode.float32(encode.float32(NaN))));
+  });
 
-  const v4 = Infinity;
-  t.is(decode.float32(encode.float32(v4)), v4);
+  it("encodes Infinity correctly", function () {
+    const v = Infinity;
+    assert.equal(decode.float32(encode.float32(v)), v);
+  });
 
-  const v5 = -Infinity;
-  t.is(decode.float32(encode.float32(v5)), v5);
+  it("encodes -Infinity correctly", function () {
+    const v = -Infinity;
+    assert.equal(decode.float32(encode.float32(v)), v);
+  });
 });
 
-test("`float64`", t => {
-  t.plan(5);
-
+describe("float64", function () {
   const epsilon = Math.pow(2, -53);
 
-  const v1 = 10987.11729817261;
-  const bytes1 = encode.float64(v1);
-  t.true(Math.abs(v1 - decode.float64(bytes1)) < Math.abs(v1*epsilon));
+  it("encodes 10987.11729817261 within float 64 epsilon", function () {
+    const v = 10987.11729817261;
+    const bytes = encode.float64(v);
+    assert.ok(Math.abs(v - decode.float64(bytes)) < Math.abs(v*epsilon));
+  });
 
-  const v2 = -0.00981718769187;
-  const bytes2 = encode.float64(v2);
-  t.true(Math.abs(v2 - decode.float64(bytes2)) < Math.abs(v2*epsilon));
+  it("encodes -0.00981718769187 within float 64 epsilon", function () {
+    const v = -0.00981718769187;
+    const bytes = encode.float64(v);
+    assert.ok(Math.abs(v - decode.float64(bytes)) < Math.abs(v*epsilon));
+  });
 
-  const v3 = NaN;
-  const bytes3 = encode.float64(v3);
-  t.is(decode.float64(bytes3), v3);
+  it("encodes NaN correctly", function () {
+    const bytes = encode.float64(NaN);
+    assert.ok(Number.isNaN(decode.float64(bytes)));
+  });
 
-  const v4 = Infinity;
-  const bytes4 = encode.float64(v4);
-  t.is(decode.float64(bytes4), v4);
+  it("encodes Infinity correctly", function () {
+    const v = Infinity;
+    const bytes = encode.float64(v);
+    assert.equal(decode.float64(bytes), v);
+  });
 
-  const v5 = -Infinity;
-  const bytes5 = encode.float64(v5);
-  t.is(decode.float64(bytes5), v5);
+  it("encodes -Infinity correctly", function () {
+    const v = -Infinity;
+    const bytes = encode.float64(v);
+    assert.equal(decode.float64(bytes), v);
+  });
 });
