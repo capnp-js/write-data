@@ -1,7 +1,9 @@
 /* @flow */
 
+import type { BytesB } from "@capnp-js/bytes";
 import type { Int64 } from "@capnp-js/int64";
 
+import { get, set } from "@capnp-js/bytes";
 import { inject } from "@capnp-js/int64";
 
 /* Unsigned integer types. */
@@ -16,44 +18,45 @@ type i32 = number;
 type f32 = number;
 type f64 = number;
 
-export function bit(value: boolean, bytes: Uint8Array, position: uint, bitPosition: u3): void {
+export function bit(value: boolean, bytes: BytesB, position: uint, bitPosition: u3): void {
   /* Before I set the bit with an `|` operator, I need to zero it out. */
-  bytes[position] = bytes[position] & ~(0x01 << bitPosition);
+  set(get(position, bytes) & ~(0x01 << bitPosition), position, bytes);
 
   if (value) {
-    bytes[position] = bytes[position] | (0x01 << bitPosition);
+    set(get(position, bytes) | (0x01 << bitPosition), position, bytes);
   }
 }
 
-export function int8(value: i32, bytes: Uint8Array, position: uint): void {
-  bytes[position] = value;
+export function int8(value: i32, bytes: BytesB, position: uint): void {
+  set(value, position, bytes);
 }
 
-export function int16(value: i32, bytes: Uint8Array, position: uint): void {
-  bytes[position] = value;
+export function int16(value: i32, bytes: BytesB, position: uint): void {
+  set(value, position, bytes);
   value >>= 8;
-  bytes[++position] = value;
+  set(value, ++position, bytes);
 }
 
-export function int32(value: i32, bytes: Uint8Array, position: uint): void {
-  bytes[position] = value;
+export function int32(value: i32, bytes: BytesB, position: uint): void {
+  //TODO: Should this use >>>= instead of >>=? What about uint32?
+  set(value, position, bytes);
   value >>= 8;
-  bytes[++position] = value;
+  set(value, ++position, bytes);
   value >>= 8;
-  bytes[++position] = value;
+  set(value, ++position, bytes);
   value >>= 8;
-  bytes[++position] = value;
+  set(value, ++position, bytes);
 }
 
-export function uint8(value: u32, bytes: Uint8Array, position: uint): void {
+export function uint8(value: u32, bytes: BytesB, position: uint): void {
   int8(value, bytes, position);
 }
 
-export function uint16(value: u32, bytes: Uint8Array, position: uint): void {
+export function uint16(value: u32, bytes: BytesB, position: uint): void {
   int16(value, bytes, position);
 }
 
-export function uint32(value: u32, bytes: Uint8Array, position: uint): void {
+export function uint32(value: u32, bytes: BytesB, position: uint): void {
   int32(value, bytes, position);
 }
 

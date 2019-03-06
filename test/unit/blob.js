@@ -3,27 +3,28 @@
 import * as assert from "assert";
 import * as decode from "@capnp-js/read-data";
 import { describe, it } from "mocha";
+import { create, get, set } from "@capnp-js/bytes";
 
 import * as encode from "../../src/index";
 
 describe("bit", function () {
-  const b = new Uint8Array(1);
-  b[0] = 0;
+  const b = create(1);
+  set(0, 0, b);
 
   it("sets one bit at a time within a byte", function () {
     encode.bit(true, b, 0, 0);
-    assert.equal(b[0], 0x01);
+    assert.equal(get(0, b), 0x01);
 
     encode.bit(true, b, 0, 1);
-    assert.equal(b[0], 0x03);
+    assert.equal(get(0, b), 0x03);
 
     encode.bit(true, b, 0, 7);
-    assert.equal(b[0], 0x83);
+    assert.equal(get(0, b), 0x83);
   });
 });
 
 describe("int8", function () {
-  const b = new Uint8Array(4);
+  const b = create(4);
 
   it("encodes -1 correctly", function () {
     encode.int8(-1, b, 0);
@@ -47,7 +48,7 @@ describe("int8", function () {
 });
 
 describe("int16", function () {
-  const b = new Uint8Array(8);
+  const b = create(8);
 
   it("encodes -30913 correctly", function () {
     encode.int16(-30913, b, 0);
@@ -71,7 +72,7 @@ describe("int16", function () {
 });
 
 describe("int32", function () {
-  const b = new Uint8Array(16);
+  const b = create(16);
 
   it("encodes -752923624 correctly", function () {
     encode.int32(-752923624, b, 0);
@@ -95,7 +96,7 @@ describe("int32", function () {
 });
 
 describe("uint8", function () {
-  const b = new Uint8Array(4);
+  const b = create(4);
 
   it("encodes 255 correctly", function () {
     encode.uint8(255, b, 0);
@@ -119,7 +120,7 @@ describe("uint8", function () {
 });
 
 describe("uint16", function () {
-  const b = new Uint8Array(8);
+  const b = create(8);
 
   it("encodes 34623 correctly", function () {
     encode.uint16(34623, b, 0);
